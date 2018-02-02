@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from django.core.urlresolvers import reverse_lazy
+
+
+LOGIN_REDIRECT_URL = reverse_lazy('dashboard')
+LOGIN_URL = reverse_lazy('login')
+LOGOUT_URL = reverse_lazy('logout')
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -31,13 +37,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account',
+    'django.contrib.admin',
 )
 
 MIDDLEWARE_CLASSES = (

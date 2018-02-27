@@ -37,13 +37,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'account',
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account',
-    'django.contrib.admin',
+    'social.apps.django_app.default',
+ 
 )
 
 MIDDLEWARE_CLASSES = (
@@ -107,3 +109,24 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_HOST_USER = '244081385@qq.com'
+EMAIL_HOST_PASSWORD = 'exmbvdbwhojvbied'
+EMAIL_HOST_PORT = 25
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = '244081385@qq.com'
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'account.authtication.EmailAuthBackend',
+    'social.backends.twitter.TwitterOAuth'
+)
+
+
+SOCIAL_AUTH_TWITTER_KEY = 'BN4eKjSz13ktCkypSk023N6UL'
+SOCIAL_AUTH_TWITTER_SECRET = 'hBiedChvIyJsFmHv88ZLNNzIMZMUKFNJDqKum0zAPNPi5azPBQ'

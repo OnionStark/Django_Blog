@@ -14,13 +14,11 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 from django.core.urlresolvers import reverse_lazy
 
-
 LOGIN_REDIRECT_URL = reverse_lazy('dashboard')
 LOGIN_URL = reverse_lazy('login')
 LOGOUT_URL = reverse_lazy('logout')
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -33,7 +31,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -44,9 +41,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'social.apps.django_app.default',
- 
-)
+    'social_django',
+    'social.apps.django_app.default', )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -57,7 +53,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-)
+    'social_django.middleware.SocialAuthExceptionMiddleware', )
 
 ROOT_URLCONF = 'bookmark.urls'
 
@@ -72,13 +68,14 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',  # <--
+                'social_django.context_processors.login_redirect',  # <--
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'bookmark.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
@@ -89,7 +86,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -104,7 +100,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
@@ -116,17 +111,42 @@ EMAIL_HOST_PORT = 25
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = '244081385@qq.com'
 
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'account.authtication.EmailAuthBackend',
-    'social.backends.twitter.TwitterOAuth'
-)
+    # Make up a username for this person, appends a random string at the end if
+    # there's any collision.
+    # 'social_core.pipeline.user.get_username',
 
+    # CUSTOM: this gets email address as the username and validates it matches
+    # the logged in user's email address.
+    'repairs_accounts.pipeline.get_username',
+
+    # 'social_core.pipeline.mail.mail_validation',
+    'social_core.pipeline.social_auth.associate_by_email',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details')
+
+AUTHENTICATION_BACKENDS = ('social_core.backends.facebook.FacebookOAuth2',
+                           'django.contrib.auth.backends.ModelBackend',
+                           'account.authentication.EmailAuthBackend',
+                           'social.backends.twitter.TwitterOAuth')
+
+SOCIAL_AUTH_FACEBOOK_KEY = '187881091811087'
+SOCIAL_AUTH_FACEBOOK_SECRET = '3ea4b985149712066eb74ff4f8def308'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 
 SOCIAL_AUTH_TWITTER_KEY = 'BN4eKjSz13ktCkypSk023N6UL'
 SOCIAL_AUTH_TWITTER_SECRET = 'hBiedChvIyJsFmHv88ZLNNzIMZMUKFNJDqKum0zAPNPi5azPBQ'
+# LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_FACEBOOK_API_VERSION = '2.11'
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'

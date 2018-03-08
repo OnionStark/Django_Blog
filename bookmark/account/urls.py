@@ -11,8 +11,10 @@ urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
 
     # change password urls
-    url(r'^password-change/$', 'django.contrib.auth.views.password_change',
-        {'template_name': 'registration/password_form.html'}, name='password_change'),
+    url(r'^password-change/$',
+        'django.contrib.auth.views.password_change',
+        {'template_name': 'registration/password_form.html'},
+        name='password_change'),
     url(r'^password-change/done/$',
         'django.contrib.auth.views.password_change_done',
         name='password_change_done'),
@@ -29,5 +31,5 @@ urlpatterns = [
         'django.contrib.auth.views.password_reset_complete',
         name='password_reset_complete'),
     url(r'^register/$', views.register, name='register'),
-    url(r'^edit/$', views.edit,name='edit'),
+    url(r'^edit/$', views.edit, name='edit'),
 ]
